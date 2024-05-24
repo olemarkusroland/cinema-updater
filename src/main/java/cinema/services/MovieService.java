@@ -25,7 +25,7 @@ public class MovieService {
     private MovieRepository movieRepository;
 
     public Movie getMovie(String imdbID) {
-        String url = "https://www.omdbapi.com/?i=" + imdbID + "&apikey=" + apiKey;
+        String url = "https://www.omdbapi.com/?&apikey=" + apiKey + "&i=" + imdbID;
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -39,7 +39,7 @@ public class MovieService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(jsonResponse);
             Movie movie = objectMapper.treeToValue(jsonNode, Movie.class);
-            if (movie != null && movie.imdbID != null && !movie.imdbID.isEmpty()) {
+            if (isValidMovie(movie)) {
                 movieRepository.save(movie);
             }
             return movie;
@@ -56,6 +56,7 @@ public class MovieService {
             String imdbID = String.format("tt%07d", startId + i);
             Movie movie = getMovie(imdbID);
             if (movie != null) {
+                System.out.println("Movie retrieved: " + movie.title);
                 movies.add(movie);
             }
         }
@@ -65,5 +66,14 @@ public class MovieService {
     public String getHighestImdbID() {
         Movie movie = movieRepository.findTopByOrderByImdbIDDesc();
         return (movie != null) ? movie.imdbID : "tt0000000";
+    }
+
+    private boolean isValidMovie(Movie movie) {
+        if (movie == null) return false;
+        if ("N/A".equals(movie.title) || "N/A".equals(movie.year) || "N/A".equals(movie.released) ||
+                "N/A".equals(movie.plot) || "N/A".equals(movie.poster)) {
+            return false;
+        }
+        return "movie".equals(movie.type);
     }
 }

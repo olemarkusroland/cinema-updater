@@ -24,7 +24,6 @@ public class Program implements CommandLineRunner {
     public void run(String... args) {
 
         String highestImdbID = movieService.getHighestImdbID();
-        List<Movie> movies = movieService.getMovies(highestImdbID, 10);
-        movies.forEach(movie -> System.out.println("Movie retrieved: " + movie.title));
+        List<Movie> movies = movieService.getMovies(highestImdbID, 100);
     }
 }

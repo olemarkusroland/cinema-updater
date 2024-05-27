@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,10 @@ public class MovieService {
             JsonNode jsonNode = objectMapper.readTree(jsonResponse);
             Movie movie = objectMapper.treeToValue(jsonNode, Movie.class);
             if (isValidMovie(movie)) {
+                OffsetDateTime now = OffsetDateTime.now();
+
+                movie.createdAt = now;
+                movie.updatedAt = now;
                 movieRepository.save(movie);
             }
             return movie;
@@ -56,7 +61,6 @@ public class MovieService {
             String imdbID = String.format("tt%07d", startId + i);
             Movie movie = getMovie(imdbID);
             if (movie != null) {
-                System.out.println("Movie retrieved: " + movie.title);
                 movies.add(movie);
             }
         }

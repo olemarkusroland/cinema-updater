@@ -1,10 +1,9 @@
 package cinema.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
@@ -85,4 +84,20 @@ public class Movie {
 
     @JsonProperty("Response")
     public String response;
+
+    public OffsetDateTime createdAt;
+    public OffsetDateTime updatedAt;
+
+    public Movie() {}
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = OffsetDateTime.now();
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
 }

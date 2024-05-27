@@ -11,18 +11,18 @@ public class Screening {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
 
-    public Integer movieId;
+    public String movieId;
 
     public Integer screenNumber;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ssXXX")
-    private OffsetDateTime startsAt;
+    public OffsetDateTime startsAt;
 
     protected OffsetDateTime createdAt;
     protected OffsetDateTime updatedAt;
 
-    protected Screening() {}
+    public Screening() {}
 
     @PrePersist
     protected void onCreate() {
